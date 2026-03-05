@@ -139,6 +139,7 @@ async function seed(): Promise<void> {
   await pool.query('DELETE FROM plans');
   await pool.query('DELETE FROM partners');
   await pool.query('DELETE FROM partner_logos');
+  await pool.query('DELETE FROM about_us');
 
   // Insert plans
   for (const p of PLANS) {
@@ -169,6 +170,14 @@ async function seed(): Promise<void> {
     );
   }
   console.log(`[Seed] ✓ ${LOGOS.length} logos`);
+
+  // Insert about us config (single row)
+  await pool.query(
+    `INSERT INTO about_us (id, company_logo_url, phone_number, facebook_url, twitter_url, instagram_url, linkedin_url)
+     VALUES (1, $1, $2, $3, $4, $5, $6)`,
+    ['', '+959 780786224', '', '', '', '']
+  );
+  console.log('[Seed] ✓ about_us config');
 
   console.log('[Seed] Done.');
 }

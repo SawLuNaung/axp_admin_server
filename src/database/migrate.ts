@@ -42,6 +42,20 @@ const CREATE_PARTNER_LOGOS_TABLE = `
   );
 `;
 
+const CREATE_ABOUT_US_TABLE = `
+  CREATE TABLE IF NOT EXISTS about_us (
+    id                INTEGER      PRIMARY KEY DEFAULT 1,
+    company_logo_url  VARCHAR(500) NOT NULL DEFAULT '',
+    phone_number      VARCHAR(50)  NOT NULL DEFAULT '',
+    facebook_url      VARCHAR(500) NOT NULL DEFAULT '',
+    twitter_url       VARCHAR(500) NOT NULL DEFAULT '',
+    instagram_url     VARCHAR(500) NOT NULL DEFAULT '',
+    linkedin_url      VARCHAR(500) NOT NULL DEFAULT '',
+    updated_at        TIMESTAMP    NOT NULL DEFAULT NOW(),
+    CONSTRAINT single_row CHECK (id = 1)
+  );
+`;
+
 async function migrate(): Promise<void> {
   console.log('[Migrate] Creating tables...');
 
@@ -53,6 +67,9 @@ async function migrate(): Promise<void> {
 
   await pool.query(CREATE_PARTNER_LOGOS_TABLE);
   console.log('[Migrate] ✓ partner_logos');
+
+  await pool.query(CREATE_ABOUT_US_TABLE);
+  console.log('[Migrate] ✓ about_us');
 
   console.log('[Migrate] Done.');
 }

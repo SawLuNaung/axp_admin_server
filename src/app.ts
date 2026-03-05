@@ -8,6 +8,7 @@ import { errorHandler } from './middleware/error-handler';
 import plansRouter from './routes/plans.routes';
 import partnersRouter from './routes/partners.routes';
 import logosRouter from './routes/logos.routes';
+import aboutUsRouter from './routes/about-us.routes';
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use('/uploads', express.static(path.resolve(config.upload.dir)));
 app.use('/api/plans', plansRouter);
 app.use('/api/partners', partnersRouter);
 app.use('/api/logos', logosRouter);
+app.use('/api/about-us', aboutUsRouter);
 
 // ─── Health check ───────────────────────────────────────────
 
