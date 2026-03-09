@@ -42,6 +42,26 @@ const CREATE_PARTNER_LOGOS_TABLE = `
   );
 `;
 
+const CREATE_ADMIN_USERS_TABLE = `
+  CREATE TABLE IF NOT EXISTS admin_users (
+    id              SERIAL PRIMARY KEY,
+    username        VARCHAR(50)  UNIQUE NOT NULL,
+    password_hash   VARCHAR(255) NOT NULL,
+    created_at      TIMESTAMP    NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMP    NOT NULL DEFAULT NOW()
+  );
+`;
+
+const CREATE_REFRESH_TOKENS_TABLE = `
+  CREATE TABLE IF NOT EXISTS refresh_tokens (
+    id              SERIAL PRIMARY KEY,
+    admin_id        INTEGER      NOT NULL REFERENCES admin_users(id) ON DELETE CASCADE,
+    token           VARCHAR(500) NOT NULL,
+    expires_at      TIMESTAMP    NOT NULL,
+    created_at      TIMESTAMP    NOT NULL DEFAULT NOW()
+  );
+`;
+
 const CREATE_ABOUT_US_TABLE = `
   CREATE TABLE IF NOT EXISTS about_us (
     id                INTEGER      PRIMARY KEY DEFAULT 1,
@@ -70,6 +90,12 @@ async function migrate(): Promise<void> {
 
   await pool.query(CREATE_ABOUT_US_TABLE);
   console.log('[Migrate] ✓ about_us');
+
+  await pool.query(CREATE_ADMIN_USERS_TABLE);
+  console.log('[Migrate] ✓ admin_users');
+
+  await pool.query(CREATE_REFRESH_TOKENS_TABLE);
+  console.log('[Migrate] ✓ refresh_tokens');
 
   console.log('[Migrate] Done.');
 }

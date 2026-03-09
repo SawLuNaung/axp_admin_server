@@ -1,4 +1,6 @@
+import bcrypt from 'bcrypt';
 import { pool } from './pool';
+import { config } from '../config';
 
 // ─── Seed data (matches the frontend's hardcoded INITIAL_* constants) ───
 
@@ -178,6 +180,21 @@ async function seed(): Promise<void> {
     ['', '+959 780786224', '', '', '', '']
   );
   console.log('[Seed] ✓ about_us config');
+
+  // Seed default admin (skip if already exists)
+  const passwordHash = await bcrypt.hash(config.adminDefaultPassword, 10);
+  const result = await pool.query(
+    `INSERT INTO admin_users (username, password_hash)
+     VALUES ($1, $2)
+     ON CONFLICT (username) DO NOTHING
+     RETURNING id`,
+    ['admin', passwordHash]
+  );
+  if (result.rowCount && result.rowCount > 0) {
+    console.log('[Seed] ✓ admin user created (username: admin)');
+  } else {
+    console.log('[Seed] ✓ admin user already exists, skipped');
+  }
 
   console.log('[Seed] Done.');
 }

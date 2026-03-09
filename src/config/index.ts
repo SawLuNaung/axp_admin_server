@@ -19,4 +19,12 @@ export const config = {
     dir: process.env.UPLOAD_DIR || 'uploads',
     maxFileSize: parseInt(process.env.MAX_FILE_SIZE || '2097152', 10), // 2MB
   },
+
+  jwt: {
+    secret: process.env.JWT_SECRET || 'dev-secret-change-me',
+    accessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m',
+    refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
+  },
+
+  adminDefaultPassword: process.env.ADMIN_DEFAULT_PASSWORD || 'admin123',
 };

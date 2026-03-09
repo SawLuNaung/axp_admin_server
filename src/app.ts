@@ -3,8 +3,9 @@ import cors from 'cors';
 import path from 'path';
 import { config } from './config';
 import { errorHandler } from './middleware/error-handler';
+import { authenticate } from './middleware/auth';
 
-// Route imports (handlers will be implemented in the next steps)
+import authRouter from './routes/auth.routes';
 import plansRouter from './routes/plans.routes';
 import partnersRouter from './routes/partners.routes';
 import logosRouter from './routes/logos.routes';
@@ -24,18 +25,22 @@ app.use(express.json());
 // e.g. GET /uploads/abc123.png → serves from uploads/abc123.png
 app.use('/uploads', express.static(path.resolve(config.upload.dir)));
 
-// ─── API Routes ─────────────────────────────────────────────
+// ─── Public routes ──────────────────────────────────────────
+
+app.use('/api/auth', authRouter);
+
+app.get('/api/health', (_req, res) => {
+  res.json({ status: 'ok' });
+});
+
+// ─── Protected routes (require valid access token) ──────────
+
+app.use('/api', authenticate);
 
 app.use('/api/plans', plansRouter);
 app.use('/api/partners', partnersRouter);
 app.use('/api/logos', logosRouter);
 app.use('/api/about-us', aboutUsRouter);
-
-// ─── Health check ───────────────────────────────────────────
-
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok' });
-});
 
 // ─── Error handler (must be last) ───────────────────────────
 
