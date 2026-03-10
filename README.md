@@ -22,20 +22,20 @@ Backend API server for the AXP Admin Dashboard. Provides REST APIs for managing 
 | `POST` | `/api/auth/logout` | Revoke a refresh token |
 | `GET` | `/api/health` | Health check |
 
-### Protected (require `Authorization: Bearer <accessToken>` header)
+### Data endpoints (GET = public, write operations = require `Authorization: Bearer <accessToken>`)
 
-| # | Method | Endpoint | Description |
-|---|--------|----------|-------------|
-| 1 | `GET` | `/api/plans` | Fetch all pricing plans |
-| 2 | `PUT` | `/api/plans` | Bulk-save pricing plans |
-| 3 | `GET` | `/api/partners` | Fetch all partner testimonials |
-| 4 | `PUT` | `/api/partners/featured` | Update featured partner selection (max 3) |
-| 5 | `GET` | `/api/logos` | Fetch all partner logos |
-| 6 | `PUT` | `/api/logos` | Bulk-save partner logos |
-| 7 | `POST` | `/api/logos/upload` | Upload a logo image (multipart/form-data) |
-| 8 | `GET` | `/api/about-us` | Fetch about-us config |
-| 9 | `PUT` | `/api/about-us` | Update about-us config |
-| 10 | `POST` | `/api/about-us/upload` | Upload company logo |
+| # | Method | Endpoint | Auth | Description |
+|---|--------|----------|------|-------------|
+| 1 | `GET` | `/api/plans` | No | Fetch all pricing plans |
+| 2 | `PUT` | `/api/plans` | Yes | Bulk-save pricing plans |
+| 3 | `GET` | `/api/partners` | No | Fetch all partner testimonials |
+| 4 | `PUT` | `/api/partners/featured` | Yes | Update featured partner selection (max 3) |
+| 5 | `GET` | `/api/logos` | No | Fetch all partner logos |
+| 6 | `PUT` | `/api/logos` | Yes | Bulk-save partner logos |
+| 7 | `POST` | `/api/logos/upload` | Yes | Upload a logo image (multipart/form-data) |
+| 8 | `GET` | `/api/about-us` | No | Fetch about-us config |
+| 9 | `PUT` | `/api/about-us` | Yes | Update about-us config |
+| 10 | `POST` | `/api/about-us/upload` | Yes | Upload company logo |
 
 ## Project Structure
 
@@ -314,5 +314,5 @@ The migration script creates 5 tables:
 ## Notes
 
 - **CORS** is currently set to allow all origins (`*`). For production, restrict to the frontend domain.
-- **Authentication** is enforced on all `/api/*` routes except `/api/auth/*` and `/api/health`. Set a strong `JWT_SECRET` in production.
+- **Authentication** is enforced on write operations (PUT, POST, DELETE) for all `/api/*` routes. GET requests are public so the customer-facing website can fetch data without a token. Set a strong `JWT_SECRET` in production.
 - **Static files**: Uploaded images are served at `/uploads/<filename>`.

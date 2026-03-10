@@ -3,7 +3,7 @@ import cors from 'cors';
 import path from 'path';
 import { config } from './config';
 import { errorHandler } from './middleware/error-handler';
-import { authenticate } from './middleware/auth';
+import { authenticateWrites } from './middleware/auth';
 
 import authRouter from './routes/auth.routes';
 import plansRouter from './routes/plans.routes';
@@ -33,9 +33,9 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
-// ─── Protected routes (require valid access token) ──────────
+// ─── Data routes (GET = public, PUT/POST/DELETE = require token) ─
 
-app.use('/api', authenticate);
+app.use('/api', authenticateWrites);
 
 app.use('/api/plans', plansRouter);
 app.use('/api/partners', partnersRouter);

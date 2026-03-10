@@ -15,6 +15,9 @@ declare global {
   }
 }
 
+/**
+ * Require a valid access token for all requests.
+ */
 export function authenticate(
   req: Request,
   res: Response,
@@ -36,4 +39,22 @@ export function authenticate(
   } catch {
     res.status(401).json({ success: false, message: 'Invalid or expired access token.' });
   }
+}
+
+/**
+ * Require a valid access token only for write operations (POST, PUT, PATCH, DELETE).
+ * GET/HEAD/OPTIONS requests pass through without authentication.
+ */
+export function authenticateWrites(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void {
+  const readMethods = ['GET', 'HEAD', 'OPTIONS'];
+
+  if (readMethods.includes(req.method)) {
+    return next();
+  }
+
+  return authenticate(req, res, next);
 }
